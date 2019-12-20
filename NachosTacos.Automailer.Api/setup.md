@@ -45,3 +45,20 @@ public void Configure(IApplicationBuilder app)
 ```
 4. Create the XML file
 Open the API Project Properties, in the build tab, output path, check the XML Documentation
+
+
+## SeriLog
+[https://nblumhardt.com/2019/10/serilog-in-aspnetcore-3/]
+[https://github.com/serilog/serilog/wiki/Configuration-Basics]
+
+
+1. Add package Serilog.AspNetCore
+2. Add package Serilog.Sinks.File
+
+
+## EntityFramework
+1. Add package Microsoft.EntityFrameworkCore.SqlServer
+2. Add package Microsoft.EntityFrameworkCore.Tools
+3. Add package Microsoft.EntityFrameworkCore.Design
+
+

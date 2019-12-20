@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NachoTacos.Automailer.Data;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace NachosTacos.Automailer.Api
@@ -29,6 +30,10 @@ namespace NachosTacos.Automailer.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            NachoTacos.Automailer.Data.Startup
+                .ConfigureServices(services, Configuration.GetConnectionString("AutomailerConnection"));
+            
+            
             services
                 .AddFluentEmail("defaultsender@test.test")
                 .AddRazorRenderer()
