@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NachoTacos.Automailer.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NachoTacos.Automailer.Data
 {
@@ -13,8 +10,18 @@ namespace NachoTacos.Automailer.Data
 
         }
 
-        public DbSet<AutomailerTask> MailerTasks { get; set; }
+        public DbSet<EmailTask> EmailTasks { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
-        public DbSet<EmailTemplateModel> EmailTemplateModels { get; set; }
+        public DbSet<EmailModel> EmailModels { get; set; }
+        public DbSet<EmailTaskModel> EmailTaskModels { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<EmailTaskModel>()
+                .HasKey(c => new { c.EmailTaskId, c.EmailModelId });
+
+        }
     }
 }

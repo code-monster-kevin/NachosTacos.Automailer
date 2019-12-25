@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace NachoTacos.Automailer.Domain
 {
-    public class EmailTemplateModel
+    public class EmailModel
     {
-        public Guid Id { get; set; }
+        public Guid EmailModelId { get; set; }
+
+        [Required]
         public string Email { get; set; }
         public string Name { get; set; }
     }
