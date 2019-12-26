@@ -57,8 +57,10 @@ Open the API Project Properties, in the build tab, output path, check the XML Do
 
 
 ## EntityFramework
-1. Add package Microsoft.EntityFrameworkCore.SqlServer
-2. Add package Microsoft.EntityFrameworkCore.Tools
-3. Add package Microsoft.EntityFrameworkCore.Design
+1. Add package Microsoft.EntityFrameworkCore.Design
 
+## Hangfire
+[https://www.hangfire.io/]
+[https://docs.hangfire.io]
+1. Add package HangFire
 

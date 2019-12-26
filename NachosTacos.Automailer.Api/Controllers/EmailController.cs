@@ -1,15 +1,15 @@
-﻿using FluentEmail.Core;
+﻿using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NachosTacos.Automailer.Api.Services;
+using NachosTacos.Automailer.Api.ViewModels;
 using NachoTacos.Automailer.Data;
 using NachoTacos.Automailer.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NachosTacos.Automailer.Api.ViewModels;
 
 namespace NachosTacos.Automailer.Api.Controllers
 {
@@ -35,6 +35,7 @@ namespace NachosTacos.Automailer.Api.Controllers
         {
             List<EmailTask> emailTasks = _automailerContext
                                             .EmailTasks
+                                            .Include(x => x.EmailTemplate)
                                             .ToList();
 
             return Ok(emailTasks);
@@ -54,12 +55,12 @@ namespace NachosTacos.Automailer.Api.Controllers
 
         [HttpPost]
         [Route("/add")]
-        public async Task<IActionResult> AddEmailTask(string emails, string subject, string content)
+        public async Task<IActionResult> AddEmailTask(string emails, string from, string subject, string content)
         {
             List<EmailModel> modelList = CreateEmailModelList(emails);
             _automailerContext.EmailModels.AddRange(modelList);
 
-            EmailTemplate emailTemplate = CreateEmailTemplate(subject, content);
+            EmailTemplate emailTemplate = CreateEmailTemplate(from, subject, content);
             _automailerContext.EmailTemplates.Add(emailTemplate);
 
             EmailTask emailTask = CreateEmailTask(emailTemplate.EmailTemplateId);
@@ -76,16 +77,14 @@ namespace NachosTacos.Automailer.Api.Controllers
 
         [HttpPost]
         [Route("/send")]
-        public async Task<IActionResult> ActivateEmailTask(Guid Id, [FromServices] IFluentEmailFactory emailFactory)
+        public IActionResult ActivateEmailTask(Guid Id)
         {
             AutomailerTask automailerTask = GetAutomailerTask(Id);
             if (automailerTask == null)
             {
                 return NotFound();
             }
-
-            EmailService emailService = new EmailService(emailFactory);
-            await emailService.Send(automailerTask);
+            BackgroundJob.Schedule<EmailService>(x => x.SendEmail(automailerTask), TimeSpan.FromSeconds(1));
 
             return Ok();
         }
@@ -109,13 +108,14 @@ namespace NachosTacos.Automailer.Api.Controllers
             return modelList;
         }
         
-        private EmailTemplate CreateEmailTemplate(string subject, string content)
+        private EmailTemplate CreateEmailTemplate(string from, string subject, string content)
         {
             return new EmailTemplate
             {
                 EmailTemplateId = Guid.NewGuid(),
                 EmailSubject = subject,
-                EmailContent = content
+                EmailContent = content,
+                EmailFrom = from
             };
         }
 
@@ -149,6 +149,10 @@ namespace NachosTacos.Automailer.Api.Controllers
                                     .EmailTasks
                                     .Include(x => x.EmailTemplate)
                                     .FirstOrDefault(x => x.EmailTaskId == Id);
+            if (emailTask == null)
+            {
+                return null;
+            }
 
             List<EmailModel> emailModels = (from et in _automailerContext.EmailTaskModels
                                            join em in _automailerContext.EmailModels on et.EmailModelId equals em.EmailModelId
@@ -159,6 +163,10 @@ namespace NachosTacos.Automailer.Api.Controllers
                                                Email = em.Email,
                                                Name = em.Name
                                            }).ToList();
+            if (emailModels.Count == 0)
+            {
+                return null;
+            }
 
             return new AutomailerTask
             {

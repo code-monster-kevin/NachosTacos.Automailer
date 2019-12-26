@@ -12,8 +12,13 @@ namespace NachoTacos.Automailer.Data.Migrations
                 columns: table => new
                 {
                     EmailModelId = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Text1 = table.Column<string>(nullable: true),
+                    Text2 = table.Column<string>(nullable: true),
+                    Text3 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,6 +30,9 @@ namespace NachoTacos.Automailer.Data.Migrations
                 columns: table => new
                 {
                     EmailTemplateId = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
+                    EmailFrom = table.Column<string>(nullable: false),
                     EmailSubject = table.Column<string>(nullable: false),
                     EmailContent = table.Column<string>(nullable: false)
                 },
@@ -38,6 +46,8 @@ namespace NachoTacos.Automailer.Data.Migrations
                 columns: table => new
                 {
                     EmailTaskId = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
                     EmailTemplateId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>

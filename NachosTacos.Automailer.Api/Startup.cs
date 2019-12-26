@@ -1,3 +1,5 @@
+using FluentEmail.Core;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +34,7 @@ namespace NachosTacos.Automailer.Api
                 .AddFluentEmail("defaultsender@test.test")
                 .AddRazorRenderer()
                 .AddSmtpSender("localhost", 25);  // requires smtp4dev started
+            services.AddTransient<IFluentEmailFactory, FluentEmailFactory>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -41,6 +44,9 @@ namespace NachosTacos.Automailer.Api
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("AutomailerConnection")));
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +74,8 @@ namespace NachosTacos.Automailer.Api
             {
                 endpoints.MapControllers();
             });
+
+            app.UseHangfireDashboard();
         }
     }
 }

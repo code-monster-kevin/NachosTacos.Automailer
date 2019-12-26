@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NachoTacos.Automailer.Domain
 {
-    public class EmailTask
+    public class EmailTask : Updateable
     {
         public Guid EmailTaskId { get; set; }
         public Guid EmailTemplateId { get; set; }

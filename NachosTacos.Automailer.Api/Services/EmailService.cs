@@ -1,30 +1,28 @@
 ﻿using FluentEmail.Core;
+using NachosTacos.Automailer.Api.ViewModels;
 using NachoTacos.Automailer.Domain;
 using System.Threading.Tasks;
-using NachosTacos.Automailer.Api.ViewModels;
 
 namespace NachosTacos.Automailer.Api.Services
 {
     public class EmailService
     {
-        private readonly IFluentEmailFactory _emailFactory;
-
-        public EmailService(IFluentEmailFactory emailFactory)
+        private readonly IFluentEmailFactory _fluentEmailFactory;
+        public EmailService(IFluentEmailFactory fluentEmailFactory)
         {
-            _emailFactory = emailFactory;
+            _fluentEmailFactory = fluentEmailFactory;
         }
-
-        public async Task Send(AutomailerTask emailTask)
+        public async Task SendEmail(AutomailerTask emailTask)
         {
             if (emailTask != null)
             {
-                foreach (EmailModel item in emailTask.EmailModels)
+                foreach(EmailModel item in emailTask.EmailModels)
                 {
-                    await _emailFactory.Create()
-                        .To(item.Email)
-                        .Subject(emailTask.EmailTemplate.EmailSubject)
-                        .UsingTemplate(emailTask.EmailTemplate.EmailContent, item)
-                        .SendAsync();
+                    await _fluentEmailFactory.Create()
+                            .To(item.Email)
+                            .Subject(emailTask.EmailTemplate.EmailSubject)
+                            .UsingTemplate(emailTask.EmailTemplate.EmailContent, item)
+                            .SendAsync();
                 }
             }
         }
