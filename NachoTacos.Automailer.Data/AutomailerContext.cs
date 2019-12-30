@@ -6,24 +6,34 @@ using System.Threading.Tasks;
 
 namespace NachoTacos.Automailer.Data
 {
-    public class AutomailerContext : DbContext
+
+    public class AutomailerContext : DbContext, IAutomailerContext
     {
         public AutomailerContext(DbContextOptions<AutomailerContext> options) : base(options)
         {
 
         }
 
-        public DbSet<EmailTask> EmailTasks { get; set; }
-        public DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public DbSet<Campaign> Campaigns { get; set; }
+        public DbSet<CampaignActivity> CampaignActivities { get; set; }
+        public DbSet<CampaignContact> CampaignContacts { get; set; }
+        public DbSet<CampaignSetting> CampaignSettings { get; set; }
+        public DbSet<CampaignTracking> CampaignTrackings { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
         public DbSet<EmailModel> EmailModels { get; set; }
-        public DbSet<EmailTaskModel> EmailTaskModels { get; set; }
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<EmailTaskModel>()
-                .HasKey(c => new { c.EmailTaskId, c.EmailModelId });
+            modelBuilder.Entity<Campaign>()
+                .HasData(
+                    Campaign.Create(Guid.Parse("905C3CBE-E2AF-4323-ADD6-6B2350501DA7"), "DEF", "Default Campaign")
+                );
+
+            modelBuilder.Entity<CampaignContact>()
+                .HasKey(c => new { c.CampaignId, c.ContactId });
 
         }
 
@@ -42,7 +52,7 @@ namespace NachoTacos.Automailer.Data
         private void UpdateEntityDates()
         {
             var now = DateTime.UtcNow;
-            foreach(var changedEntity in ChangeTracker.Entries())
+            foreach (var changedEntity in ChangeTracker.Entries())
             {
                 if (changedEntity.Entity is IUpdateable entity)
                 {

@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
 using System.Reflection;
+using NachoTacos.Automailer.Data;
 
 namespace NachosTacos.Automailer.Api
 {
@@ -26,14 +27,15 @@ namespace NachosTacos.Automailer.Api
         {
             NachoTacos.Automailer.Data.Startup
                 .ConfigureServices(services, Configuration.GetConnectionString("AutomailerConnection"));
+            services.AddTransient<IAutomailerContext, AutomailerContext>();
 
             services
                 .AddLogging();
 
             services
-                .AddFluentEmail("defaultsender@test.test")
+                .AddFluentEmail(Configuration.GetSection("smtp").GetValue<string>("defaultFromEmail"))
                 .AddRazorRenderer()
-                .AddSmtpSender("localhost", 25);  // requires smtp4dev started
+                .AddSmtpSender(Configuration.GetSection("smtp").GetValue<string>("host"), 25);
             services.AddTransient<IFluentEmailFactory, FluentEmailFactory>();
 
             services.AddControllers();

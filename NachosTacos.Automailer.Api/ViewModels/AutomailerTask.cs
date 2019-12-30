@@ -9,7 +9,6 @@ namespace NachosTacos.Automailer.Api.ViewModels
     public class AutomailerTask
     {
         public Guid AutomailerTaskId { get; set; }
-        public EmailTemplate EmailTemplate { get; set; }
-        public ICollection<EmailModel> EmailModels { get; set; }
+        public ICollection<AutomailerModel> AutomailerModels { get; set; }
     }
 }

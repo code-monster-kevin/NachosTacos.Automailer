@@ -12,16 +12,16 @@ namespace NachosTacos.Automailer.Api.Services
         {
             _fluentEmailFactory = fluentEmailFactory;
         }
-        public async Task SendEmail(AutomailerTask emailTask)
+        public async Task SendEmail(AutomailerTask automailerTask)
         {
-            if (emailTask != null)
+            if (automailerTask != null)
             {
-                foreach(EmailModel item in emailTask.EmailModels)
+                foreach(AutomailerModel item in automailerTask.AutomailerModels)
                 {
                     await _fluentEmailFactory.Create()
                             .To(item.Email)
-                            .Subject(emailTask.EmailTemplate.EmailSubject)
-                            .UsingTemplate(emailTask.EmailTemplate.EmailContent, item)
+                            .Subject(item.Subject)
+                            .UsingTemplate(item.Content, item)
                             .SendAsync();
                 }
             }
