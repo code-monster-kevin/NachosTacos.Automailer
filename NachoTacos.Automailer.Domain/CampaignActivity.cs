@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NachoTacos.Automailer.Domain
 {
@@ -7,6 +8,7 @@ namespace NachoTacos.Automailer.Domain
     /// </summary>
     public class CampaignActivity : Updateable
     {
+        [Key]
         public Guid CampaignActivityId { get; protected set; }
         public Guid CampaignTrackingId { get; protected set; }
 

@@ -15,7 +15,7 @@ namespace NachoTacos.Automailer.Domain
         [Key]
         public virtual string Email { get; protected set; }
         [Required]
-        public virtual bool Unsubscribe { get; protected set; }
+        public virtual bool Unsubscribe { get; set; }
         public virtual string Name { get; protected set; }
         public virtual string Mobile { get; protected set; }
         public virtual string IdentityNo { get; protected set; }
@@ -47,5 +47,6 @@ namespace NachoTacos.Automailer.Domain
             };
 
         }
+
     }
 }

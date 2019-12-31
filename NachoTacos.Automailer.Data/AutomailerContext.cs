@@ -14,13 +14,14 @@ namespace NachoTacos.Automailer.Data
 
         }
 
+        public DbSet<AutomailerModel> AutomailerModels { get; set; }
+        public DbSet<AutomailerTask> AutomailerTasks { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
         public DbSet<CampaignActivity> CampaignActivities { get; set; }
         public DbSet<CampaignContact> CampaignContacts { get; set; }
         public DbSet<CampaignSetting> CampaignSettings { get; set; }
         public DbSet<CampaignTracking> CampaignTrackings { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<EmailModel> EmailModels { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NachoTacos.Automailer.Domain
 {
@@ -14,5 +12,18 @@ namespace NachoTacos.Automailer.Domain
     {
         public Guid CampaignId { get; set; }
         public Guid ContactId { get; set; }
+        public DateTime JoinedDate { get; set; }
+
+        public static CampaignContact Create(Guid campaignid, Guid contactid)
+        {
+            return new CampaignContact
+            {
+                CampaignId = campaignid,
+                ContactId = contactid,
+                JoinedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+        }
     }
 }

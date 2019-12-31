@@ -3,10 +3,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NachoTacos.Automailer.Data.Migrations
 {
-    public partial class datamodel01 : Migration
+    public partial class mvpmodel01 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AutomailerTasks",
+                columns: table => new
+                {
+                    AutomailerTaskId = table.Column<Guid>(nullable: false),
+                    IsCompleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AutomailerTasks", x => x.AutomailerTaskId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "CampaignActivities",
                 columns: table => new
@@ -28,7 +40,8 @@ namespace NachoTacos.Automailer.Data.Migrations
                     CampaignId = table.Column<Guid>(nullable: false),
                     ContactId = table.Column<Guid>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedDate = table.Column<DateTime>(nullable: false)
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
+                    JoinedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,9 +68,12 @@ namespace NachoTacos.Automailer.Data.Migrations
                 columns: table => new
                 {
                     CampaignSettingId = table.Column<Guid>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false),
                     CampaignId = table.Column<Guid>(nullable: false),
                     EmailTemplateId = table.Column<Guid>(nullable: false),
-                    SendDayAfterAdded = table.Column<int>(nullable: false)
+                    SendAfterJoined = table.Column<int>(nullable: false),
+                    Active = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,9 +85,9 @@ namespace NachoTacos.Automailer.Data.Migrations
                 columns: table => new
                 {
                     CampaignTrackingId = table.Column<Guid>(nullable: false),
-                    CampaignId = table.Column<Guid>(nullable: false),
+                    CampaignSettingId = table.Column<Guid>(nullable: false),
                     EmailTemplateId = table.Column<Guid>(nullable: false),
-                    EmailModelId = table.Column<Guid>(nullable: false),
+                    ContactId = table.Column<Guid>(nullable: false),
                     SentDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -100,24 +116,6 @@ namespace NachoTacos.Automailer.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmailModels",
-                columns: table => new
-                {
-                    EmailModelId = table.Column<Guid>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    UpdatedDate = table.Column<DateTime>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Text1 = table.Column<string>(nullable: true),
-                    Text2 = table.Column<string>(nullable: true),
-                    Text3 = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmailModels", x => x.EmailModelId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EmailTemplates",
                 columns: table => new
                 {
@@ -133,14 +131,49 @@ namespace NachoTacos.Automailer.Data.Migrations
                     table.PrimaryKey("PK_EmailTemplates", x => x.EmailTemplateId);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AutomailerModels",
+                columns: table => new
+                {
+                    AutomailerModelId = table.Column<Guid>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
+                    Subject = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    TrackingLink = table.Column<string>(nullable: true),
+                    UnsubscribeLink = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Text1 = table.Column<string>(nullable: true),
+                    Text2 = table.Column<string>(nullable: true),
+                    Text3 = table.Column<string>(nullable: true),
+                    AutomailerTaskId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AutomailerModels", x => x.AutomailerModelId);
+                    table.ForeignKey(
+                        name: "FK_AutomailerModels_AutomailerTasks_AutomailerTaskId",
+                        column: x => x.AutomailerTaskId,
+                        principalTable: "AutomailerTasks",
+                        principalColumn: "AutomailerTaskId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "Campaigns",
                 columns: new[] { "Code", "CampaignId", "CreatedDate", "Description", "UpdatedDate" },
-                values: new object[] { "DEF", new Guid("905c3cbe-e2af-4323-add6-6b2350501da7"), new DateTime(2019, 12, 30, 9, 3, 24, 431, DateTimeKind.Utc).AddTicks(7368), "Default Campaign", new DateTime(2019, 12, 30, 9, 3, 24, 431, DateTimeKind.Utc).AddTicks(7899) });
+                values: new object[] { "DEF", new Guid("905c3cbe-e2af-4323-add6-6b2350501da7"), new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1380), "Default Campaign", new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1901) });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AutomailerModels_AutomailerTaskId",
+                table: "AutomailerModels",
+                column: "AutomailerTaskId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AutomailerModels");
+
             migrationBuilder.DropTable(
                 name: "CampaignActivities");
 
@@ -160,10 +193,10 @@ namespace NachoTacos.Automailer.Data.Migrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "EmailModels");
+                name: "EmailTemplates");
 
             migrationBuilder.DropTable(
-                name: "EmailTemplates");
+                name: "AutomailerTasks");
         }
     }
 }

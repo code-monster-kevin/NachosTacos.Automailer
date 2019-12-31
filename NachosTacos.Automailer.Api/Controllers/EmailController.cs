@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NachosTacos.Automailer.Api.Services;
-using NachosTacos.Automailer.Api.ViewModels;
 using NachoTacos.Automailer.Data;
 using NachoTacos.Automailer.Domain;
 using System;
@@ -20,8 +19,6 @@ namespace NachosTacos.Automailer.Api.Controllers
         #region "Constructors"
         private readonly ILogger<EmailController> _logger;
         private readonly IAutomailerContext _automailerContext;
-        static readonly byte[] TrackingGif = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x1, 0x0, 0x1, 0x0, 0x80, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2c, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x1, 0x0, 0x0, 0x2, 0x2, 0x44, 0x1, 0x0, 0x3b };
-
 
         public EmailController(IAutomailerContext automailerContext, ILogger<EmailController> logger)
         {
@@ -35,39 +32,74 @@ namespace NachosTacos.Automailer.Api.Controllers
 
         #region "Controllers"
         /// <summary>
-        /// Tracking API that returns a 1x1 pixel gif
+        /// Lists the email tasks by id
         /// </summary>
-        /// <param name="id">Tracking ID</param>
-        /// <returns>byte array image file</returns>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("pix/{id}/pixel.gif")]
-        public IActionResult GetPix(Guid id)
+        [Route("task/{id}")]
+        public IActionResult GetEmailTaskById(Guid id)
         {
-            BackgroundJob.Enqueue<TrackActivity>(x => x.SaveTracking(id));
-            return File(TrackingGif, "image/gif");
+            try
+            {
+                AutomailerTask automailerTask = _automailerContext.AutomailerTasks
+                                                                  .Include(x => x.AutomailerModels)
+                                                                  .FirstOrDefault(x => x.AutomailerTaskId == id);
+                return Ok(automailerTask);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
         }
 
-        [HttpPost]
-        [Route("send")]
+        /// <summary>
+        /// Executes the email task. This will send out the emails.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("execute/{id}")]
         public IActionResult ActivateEmailTask(Guid id)
         {
-            AutomailerTask automailerTask = GetAutomailerTask(id);
-            if (automailerTask == null)
+            try
             {
-                return NotFound();
+                if (GetAutomailerTask(id) == null)
+                {
+                    return NotFound();
+                }
+
+                BackgroundJob.Enqueue<EmailService>(x => x.SendEmail(id));
+
+                return Ok();
             }
-
-            BackgroundJob.Schedule<EmailService>(x => x.SendEmail(automailerTask), TimeSpan.FromSeconds(1));
-
-            return Ok();
+            catch(Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-
+        [HttpGet]
+        [Route("generate")]
+        public IActionResult GenerateEmailTasks()
+        {
+            try
+            {
+                BackgroundJob.Enqueue<EmailService>(x => x.CreateMailTask());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
         #endregion
         
-        private AutomailerTask GetAutomailerTask(Guid Id)
+        private AutomailerTask GetAutomailerTask(Guid id)
         {
-            return new AutomailerTask();
+            return _automailerContext.AutomailerTasks.FirstOrDefault(x => x.AutomailerTaskId == id);
         }
 
     }

@@ -19,6 +19,63 @@ namespace NachoTacos.Automailer.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("NachoTacos.Automailer.Domain.AutomailerModel", b =>
+                {
+                    b.Property<Guid>("AutomailerModelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AutomailerTaskId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnsubscribeLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AutomailerModelId");
+
+                    b.HasIndex("AutomailerTaskId");
+
+                    b.ToTable("AutomailerModels");
+                });
+
+            modelBuilder.Entity("NachoTacos.Automailer.Domain.AutomailerTask", b =>
+                {
+                    b.Property<Guid>("AutomailerTaskId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("AutomailerTaskId");
+
+                    b.ToTable("AutomailerTasks");
+                });
+
             modelBuilder.Entity("NachoTacos.Automailer.Domain.Campaign", b =>
                 {
                     b.Property<string>("Code")
@@ -45,9 +102,9 @@ namespace NachoTacos.Automailer.Data.Migrations
                         {
                             Code = "DEF",
                             CampaignId = new Guid("905c3cbe-e2af-4323-add6-6b2350501da7"),
-                            CreatedDate = new DateTime(2019, 12, 30, 9, 3, 24, 431, DateTimeKind.Utc).AddTicks(7368),
+                            CreatedDate = new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1380),
                             Description = "Default Campaign",
-                            UpdatedDate = new DateTime(2019, 12, 30, 9, 3, 24, 431, DateTimeKind.Utc).AddTicks(7899)
+                            UpdatedDate = new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1901)
                         });
                 });
 
@@ -82,6 +139,9 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("JoinedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -96,14 +156,23 @@ namespace NachoTacos.Automailer.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("CampaignId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("EmailTemplateId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("SendDayAfterAdded")
+                    b.Property<int>("SendAfterJoined")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("CampaignSettingId");
 
@@ -116,10 +185,10 @@ namespace NachoTacos.Automailer.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CampaignId")
+                    b.Property<Guid>("CampaignSettingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EmailModelId")
+                    b.Property<Guid>("ContactId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("EmailTemplateId")
@@ -170,39 +239,6 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("NachoTacos.Automailer.Domain.EmailModel", b =>
-                {
-                    b.Property<Guid>("EmailModelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Text3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EmailModelId");
-
-                    b.ToTable("EmailModels");
-                });
-
             modelBuilder.Entity("NachoTacos.Automailer.Domain.EmailTemplate", b =>
                 {
                     b.Property<Guid>("EmailTemplateId")
@@ -230,6 +266,13 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.HasKey("EmailTemplateId");
 
                     b.ToTable("EmailTemplates");
+                });
+
+            modelBuilder.Entity("NachoTacos.Automailer.Domain.AutomailerModel", b =>
+                {
+                    b.HasOne("NachoTacos.Automailer.Domain.AutomailerTask", null)
+                        .WithMany("AutomailerModels")
+                        .HasForeignKey("AutomailerTaskId");
                 });
 #pragma warning restore 612, 618
         }

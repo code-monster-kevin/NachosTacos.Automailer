@@ -78,6 +78,77 @@ namespace NachosTacos.Automailer.Api.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("contacts")]
+        public async Task<IActionResult> AddContactToCampaign(Guid campaignid, Guid contactid)
+        {
+            try
+            {
+                if (_automailerContext.Campaigns.FirstOrDefault(x => x.CampaignId == campaignid) == null)
+                    return NotFound(campaignid);
+
+                if (_automailerContext.Contacts.FirstOrDefault(x => x.ContactId == contactid) == null)
+                    return NotFound(contactid);
+
+                CampaignContact campaignContact = CampaignContact.Create(campaignid, contactid);
+                _automailerContext.CampaignContacts.Add(campaignContact);
+                await _automailerContext.SaveChangesAsync();
+                return Ok(campaignContact);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("settings")]
+        public async Task<IActionResult> CreateCampaignSettings(Guid campaignId, Guid templateId, int emailDay)
+        {
+            try
+            {
+                CampaignSetting campaignSetting = CampaignSetting.Create(campaignId, templateId, emailDay);
+
+                _automailerContext.CampaignSettings.Add(campaignSetting);
+                await _automailerContext.SaveChangesAsync();
+
+                return Ok(campaignSetting);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Activate or De-activate the campaign
+        /// </summary>
+        /// <param name="id">Campaign Setting Id</param>
+        /// <param name="active">true/false</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("settings/activate/{id}")]
+        public async Task<IActionResult> ActivateCampaign(Guid id, bool active)
+        {
+            try
+            {
+                CampaignSetting campaignSetting = _automailerContext.CampaignSettings.FirstOrDefault(x => x.CampaignSettingId == id);
+                if (campaignSetting == null) return NotFound(id);
+                campaignSetting.Active = active;
+                _automailerContext.CampaignSettings.Update(campaignSetting);
+                await _automailerContext.SaveChangesAsync();
+
+                return Ok(campaignSetting);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Problem(ex.Message);
+            }
+        }
         #endregion
     }
 }

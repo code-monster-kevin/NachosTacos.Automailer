@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace NachoTacos.Automailer.Domain
 {
@@ -10,20 +9,21 @@ namespace NachoTacos.Automailer.Domain
     /// </summary>
     public class CampaignTracking
     {
+        [Key]
         public Guid CampaignTrackingId { get; protected set; }
-        public Guid CampaignId { get; protected set; }
+        public Guid CampaignSettingId { get; protected set; }
         public Guid EmailTemplateId { get; protected set; }
-        public Guid EmailModelId { get; protected set; }
+        public Guid ContactId { get; protected set; }
         public DateTime SentDate { get; protected set; }
 
-        public static CampaignTracking Create(Guid campaignId, Guid emailTemplateId, Guid emailModelId)
+        public static CampaignTracking Create(Guid campaignSettingId, Guid emailTemplateId, Guid contactId)
         {
             return new CampaignTracking
             {
                 CampaignTrackingId = Guid.NewGuid(),
-                CampaignId = campaignId,
+                CampaignSettingId = campaignSettingId,
                 EmailTemplateId = emailTemplateId,
-                EmailModelId = emailModelId,
+                ContactId = contactId,
                 SentDate = DateTime.UtcNow
             };
         }

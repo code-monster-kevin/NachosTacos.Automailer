@@ -5,6 +5,7 @@ namespace NachoTacos.Automailer.Domain
 {
     public class EmailTemplate : Updateable
     {
+        [Key]
         public virtual Guid EmailTemplateId { get; protected set; }
         [Required]
         public virtual string EmailFrom { get; protected set; }
