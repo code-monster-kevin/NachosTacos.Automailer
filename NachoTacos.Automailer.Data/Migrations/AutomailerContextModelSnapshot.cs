@@ -68,8 +68,14 @@ namespace NachoTacos.Automailer.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("AutomailerTaskId");
 
@@ -102,9 +108,17 @@ namespace NachoTacos.Automailer.Data.Migrations
                         {
                             Code = "DEF",
                             CampaignId = new Guid("905c3cbe-e2af-4323-add6-6b2350501da7"),
-                            CreatedDate = new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1380),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 846, DateTimeKind.Utc).AddTicks(1118),
                             Description = "Default Campaign",
-                            UpdatedDate = new DateTime(2019, 12, 31, 9, 14, 39, 756, DateTimeKind.Utc).AddTicks(1901)
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 846, DateTimeKind.Utc).AddTicks(1638)
+                        },
+                        new
+                        {
+                            Code = "TEST",
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 847, DateTimeKind.Utc).AddTicks(8493),
+                            Description = "A test campaign",
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 847, DateTimeKind.Utc).AddTicks(8510)
                         });
                 });
 
@@ -148,6 +162,40 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.HasKey("CampaignId", "ContactId");
 
                     b.ToTable("CampaignContacts");
+
+                    b.HasData(
+                        new
+                        {
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            ContactId = new Guid("a0b46943-45b2-4b6c-bf07-8134339b667e"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4374),
+                            JoinedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(3865),
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4377)
+                        },
+                        new
+                        {
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            ContactId = new Guid("f9a46200-f300-402a-a91b-e26773560c76"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4462),
+                            JoinedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4449),
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4463)
+                        },
+                        new
+                        {
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            ContactId = new Guid("01134e10-a5a5-419c-8a33-5aa3404eb6c9"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4467),
+                            JoinedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4466),
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4467)
+                        },
+                        new
+                        {
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            ContactId = new Guid("794eb60f-d56f-433e-9f65-fc82987faefa"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4470),
+                            JoinedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4469),
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 849, DateTimeKind.Utc).AddTicks(4471)
+                        });
                 });
 
             modelBuilder.Entity("NachoTacos.Automailer.Domain.CampaignSetting", b =>
@@ -177,6 +225,18 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.HasKey("CampaignSettingId");
 
                     b.ToTable("CampaignSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            CampaignSettingId = new Guid("be9d40a0-987e-46d4-8343-4f306aa4d0e5"),
+                            Active = false,
+                            CampaignId = new Guid("0ff7ff45-5250-44ca-9997-c4825b8092cb"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 850, DateTimeKind.Utc).AddTicks(3802),
+                            EmailTemplateId = new Guid("e0b3fd72-8177-4e93-9627-a31603166643"),
+                            SendAfterJoined = 1,
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 850, DateTimeKind.Utc).AddTicks(3809)
+                        });
                 });
 
             modelBuilder.Entity("NachoTacos.Automailer.Domain.CampaignTracking", b =>
@@ -237,6 +297,48 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("Contacts");
+
+                    b.HasData(
+                        new
+                        {
+                            Email = "joe.test@mail.com",
+                            ContactId = new Guid("a0b46943-45b2-4b6c-bf07-8134339b667e"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7522),
+                            Name = "Joe Test",
+                            Source = "seed data",
+                            Unsubscribe = false,
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7528)
+                        },
+                        new
+                        {
+                            Email = "jane.test@mail.com",
+                            ContactId = new Guid("f9a46200-f300-402a-a91b-e26773560c76"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7594),
+                            Name = "Jane Test",
+                            Source = "seed data",
+                            Unsubscribe = false,
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7596)
+                        },
+                        new
+                        {
+                            Email = "ken.test@mail.com",
+                            ContactId = new Guid("01134e10-a5a5-419c-8a33-5aa3404eb6c9"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7611),
+                            Name = "Ken Test",
+                            Source = "seed data",
+                            Unsubscribe = false,
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7612)
+                        },
+                        new
+                        {
+                            Email = "kelly.test@mail.com",
+                            ContactId = new Guid("794eb60f-d56f-433e-9f65-fc82987faefa"),
+                            CreatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7615),
+                            Name = "Kelly Test",
+                            Source = "seed data",
+                            Unsubscribe = false,
+                            UpdatedDate = new DateTime(2020, 1, 2, 2, 18, 40, 848, DateTimeKind.Utc).AddTicks(7616)
+                        });
                 });
 
             modelBuilder.Entity("NachoTacos.Automailer.Domain.EmailTemplate", b =>
@@ -266,6 +368,17 @@ namespace NachoTacos.Automailer.Data.Migrations
                     b.HasKey("EmailTemplateId");
 
                     b.ToTable("EmailTemplates");
+
+                    b.HasData(
+                        new
+                        {
+                            EmailTemplateId = new Guid("e0b3fd72-8177-4e93-9627-a31603166643"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailContent = "<b>Hi @Model.Name,<br />We are having a<font color= 'red' > Great </ font > offer today!<br />Don't miss it!<br /><a href='@Model.UnsubscribeLink'>Unsubscribe</a> <img src='@Model.TrackingLink' />",
+                            EmailFrom = "tester1@nachotacos.com",
+                            EmailSubject = "This is a test email",
+                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("NachoTacos.Automailer.Domain.AutomailerModel", b =>

@@ -6,10 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NachoTacos.Automailer.Data;
 using System;
 using System.IO;
 using System.Reflection;
-using NachoTacos.Automailer.Data;
 
 namespace NachosTacos.Automailer.Api
 {

@@ -1,11 +1,11 @@
 ﻿using FluentEmail.Core;
+using Microsoft.EntityFrameworkCore;
 using NachoTacos.Automailer.Data;
 using NachoTacos.Automailer.Domain;
 using System;
-using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace NachosTacos.Automailer.Api.Services
 {

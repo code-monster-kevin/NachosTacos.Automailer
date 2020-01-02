@@ -6,9 +6,7 @@ using NachosTacos.Automailer.Api.Services;
 using NachoTacos.Automailer.Data;
 using NachoTacos.Automailer.Domain;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NachosTacos.Automailer.Api.Controllers
 {

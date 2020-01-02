@@ -23,15 +23,15 @@ namespace NachoTacos.Automailer.Domain
 
         public static AutomailerModel Create(string serverPath, Guid trackingId, Guid contactId, string email, string subject, string content, string name = "", string text1 = "", string text2 = "", string text3 = "")
         {
-            string trackingLink = string.Format("<img src='{0}/pix/{1}/pixel.gif' />", serverPath, trackingId);
-            string unsubscribeLink = string.Format("<a href='{0}/unsubscribe/{1}'>Unsubscribe</a>", serverPath, contactId);
+            string trackingLink = string.Format("{0}/pix/{1}/pixel.gif", serverPath, trackingId);
+            string unsubscribeLink = string.Format("{0}/unsubscribe/{1}", serverPath, contactId);
 
             return new AutomailerModel
             {
                 AutomailerModelId = Guid.NewGuid(),
                 Email = email,
                 Subject = subject,
-                Content = ContentTracking(content, trackingLink, unsubscribeLink),
+                Content = content,
                 TrackingLink = trackingLink,
                 UnsubscribeLink = unsubscribeLink,
                 Name = name,
@@ -41,15 +41,6 @@ namespace NachoTacos.Automailer.Domain
             };
         }
 
-        /// <summary>
-        /// Adds a @Model.TrackingLink and @Model.UnsubscribeLink to the template if it doesn't exist
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        private static string ContentTracking(string content, string trackingLink, string unsubscribeLink)
-        {
-            content += string.Format("<br />{0}{1}", unsubscribeLink, trackingLink);
-            return content;
-        }
+        
     }
 }

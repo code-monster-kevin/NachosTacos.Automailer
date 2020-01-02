@@ -36,9 +36,5 @@
     <ProjectReference Include="..\NachoTacos.Automailer.Domain\NachoTacos.Automailer.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 
 </Project>

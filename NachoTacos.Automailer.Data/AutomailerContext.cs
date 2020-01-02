@@ -28,14 +28,15 @@ namespace NachoTacos.Automailer.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<CampaignContact>()
+                .HasKey(c => new { c.CampaignId, c.ContactId });
+
             modelBuilder.Entity<Campaign>()
                 .HasData(
                     Campaign.Create(Guid.Parse("905C3CBE-E2AF-4323-ADD6-6B2350501DA7"), "DEF", "Default Campaign")
                 );
 
-            modelBuilder.Entity<CampaignContact>()
-                .HasKey(c => new { c.CampaignId, c.ContactId });
-
+            CustomModelBuilder.SeedTestData(modelBuilder);
         }
 
         public override int SaveChanges()
